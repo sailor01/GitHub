@@ -62,3 +62,7 @@ Suggested OpenCV pipeline for real blob detection:
 
 Use `ENABLE_SPINNAKER=ON` (CMake) or add Spinnaker include/lib paths in the VS project.
 Replace simulated frame generation in `capture_thread` with real `GetNextImage()` logic.
+
+## Design Document
+
+- Full architecture and class/interface documentation: `docs/DESIGN.md`
