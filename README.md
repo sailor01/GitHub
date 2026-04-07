@@ -38,10 +38,11 @@ The scaffold runs for 5 seconds and writes output to `output/`.
 
 The pipeline supports reading test images from a folder instead of camera input:
 
-- Supported formats: `.raw` and `.pgm` (P5)
+- Supported formats: `.raw`, `.pgm` (P5), `.bmp`
 - Default folder: `test_images/`
 - `.raw` uses configured `width x height`
 - `.pgm` uses width/height parsed from file header
+- `.bmp` supports uncompressed 8-bit/24-bit BMP and is converted to single-channel for processing
 
 Set in `src/main.cpp`:
 

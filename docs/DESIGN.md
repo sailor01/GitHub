@@ -280,13 +280,14 @@
 新增 `InputMode` 与 `InputConfig`：
 
 - `InputMode::Folder`：从 `image_folder` 读取测试图像
-- 支持 `.raw`、`.pgm(P5)`
+- 支持 `.raw`、`.pgm(P5)`、`.bmp`
 - `loop_folder=true` 时循环回放；否则读取完后停止
 
 读取行为：
 
 - `.raw`：按 `camera.width * camera.height` 读入
 - `.pgm`：从文件头解析宽高
+- `.bmp`：支持无压缩 8-bit/24-bit BMP，读取后转单通道灰度
 
 ### 11.2 blob 处理时间统计
 
