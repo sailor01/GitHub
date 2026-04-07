@@ -41,6 +41,13 @@ void update_max(std::atomic<uint64_t>& target, uint64_t candidate) {
 
 BlobResult detect_blob(const Frame& frame, const DetectionConfig& config) {
     // Placeholder detector for module-by-module bring-up.
+BlobResult detect_blob(const Frame& frame, const DetectionConfig& config) {
+    // Placeholder detector for module-by-module bring-up.
+    // Replace with OpenCV pipeline:
+    // 1) optional denoise
+    // 2) absdiff(background, frame)
+    // 3) threshold + morphology
+    // 4) connectedComponentsWithStats
     BlobResult result;
     result.frame_id = frame.frame_id;
 
