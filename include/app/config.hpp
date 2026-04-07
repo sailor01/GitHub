@@ -6,11 +6,22 @@
 
 namespace app {
 
+enum class InputMode {
+    Simulated,
+    Folder
+};
+
 struct CameraConfig {
     uint32_t width = 1280;
     uint32_t height = 1024;
     uint32_t fps = 170;
     std::string pixel_format = "BayerRG8";
+};
+
+struct InputConfig {
+    InputMode mode = InputMode::Folder;
+    std::string image_folder = "test_images";
+    bool loop_folder = true;
 };
 
 struct DetectionConfig {
@@ -35,6 +46,7 @@ struct QueueConfig {
 
 struct PipelineConfig {
     CameraConfig camera;
+    InputConfig input;
     DetectionConfig detection;
     StorageConfig storage;
     QueueConfig queue;

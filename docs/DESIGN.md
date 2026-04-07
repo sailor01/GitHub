@@ -17,7 +17,7 @@
 
 程序采用三段流水线并行模型：
 
-1. **采集线程（Capture）**：负责产生日志连续帧并推入采集队列
+1. **采集线程（Capture）**：负责从文件夹（临时模式）或模拟源读取帧并推入采集队列
 2. **检测线程（Detect）**：从采集队列取帧，执行 blob 判定，命中后推入命中队列
 3. **存储线程（Store）**：从命中队列取帧，写入 raw 文件与 `hits.csv`
 
@@ -189,7 +189,7 @@
   4. 连通域统计
   5. 面积和形状过滤
 
-### `void store_hit_frame(const Frame&, const BlobResult&, const StorageConfig&)`
+### `void store_hit_frame(const Frame&, const BlobResult&, const StorageConfig&, RuntimeStats&)`
 
 - 写入命中帧 raw（`.raw`）
 - 追加写入 `hits.csv`
@@ -271,3 +271,55 @@
 - `app::RingQueue<T>`：可复用于其他并发模块
 - `app::Frame` / `app::BlobResult`：跨线程数据契约
 
+
+
+## 11. 新增能力说明（本次更新）
+
+### 11.1 文件夹图像输入（临时代替相机）
+
+新增 `InputMode` 与 `InputConfig`：
+
+- `InputMode::Folder`：从 `image_folder` 读取测试图像
+- 支持 `.raw`、`.pgm(P5)`
+- `loop_folder=true` 时循环回放；否则读取完后停止
+
+读取行为：
+
+- `.raw`：按 `camera.width * camera.height` 读入
+- `.pgm`：从文件头解析宽高
+
+### 11.2 blob 处理时间统计
+
+在检测线程中对每帧 `detect_blob()` 统计：
+
+- 总耗时（微秒）
+- 最大耗时（微秒）
+- 平均耗时（微秒）
+
+最终输出：
+
+- `detect_time_avg_us`
+- `detect_time_max_us`
+
+### 11.3 命中帧存储时间统计
+
+在存储线程 `store_hit_frame()` 中统计：
+
+- 总耗时（微秒）
+- 最大耗时（微秒）
+- 平均耗时（微秒）
+
+最终输出：
+
+- `store_time_avg_us`
+- `store_time_max_us`
+
+### 11.4 统计字段总览
+
+运行结束时统一输出：
+
+- `processed_frames`
+- `stored_frames`
+- `dropped_frames`
+- `detect_time_avg_us` / `detect_time_max_us`
+- `store_time_avg_us` / `store_time_max_us`

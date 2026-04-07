@@ -5,6 +5,7 @@ This repository contains a Windows/MSVC-oriented C++ scaffold for:
 - FLIR camera acquisition at high frame rates (target 170 fps)
 - Blob detection pipeline (placeholder now, OpenCV drop-in point prepared)
 - Store **only hit frames** + metadata CSV
+- Folder-image playback mode for offline testing (temporary replacement for camera)
 
 ## Build (CMake)
 
@@ -33,17 +34,40 @@ Project file location:
 
 The scaffold runs for 5 seconds and writes output to `output/`.
 
+## Folder-image test mode
+
+The pipeline supports reading test images from a folder instead of camera input:
+
+- Supported formats: `.raw` and `.pgm` (P5)
+- Default folder: `test_images/`
+- `.raw` uses configured `width x height`
+- `.pgm` uses width/height parsed from file header
+
+Set in `src/main.cpp`:
+
+- `config.input.mode = app::InputMode::Folder;`
+- `config.input.image_folder = "test_images";`
+- `config.input.loop_folder = true;`
+
+## Time statistics
+
+At end of run, program prints:
+
+- `detect_time_avg_us`, `detect_time_max_us`
+- `store_time_avg_us`, `store_time_max_us`
+- `processed_frames`, `stored_frames`, `dropped_frames`
+
 ## Module-level debug order (recommended)
 
 1. **Capture thread**
-   - Confirm stable frame id increment and queue occupancy.
+   - Confirm folder images are loaded in expected order.
 2. **Detection thread**
    - Replace `detect_blob()` with OpenCV-based Bayer-domain/gray-domain logic.
 3. **Storage thread**
    - Verify only hit frames are written.
    - Verify `hits.csv` columns are complete.
 4. **End-to-end timing**
-   - Capture latency (`capture -> detect -> store`) and dropped-frame count.
+   - Track detect/store latency and dropped-frame count.
 
 ## Where to replace placeholder logic
 
@@ -61,7 +85,7 @@ Suggested OpenCV pipeline for real blob detection:
 ## Spinnaker integration notes
 
 Use `ENABLE_SPINNAKER=ON` (CMake) or add Spinnaker include/lib paths in the VS project.
-Replace simulated frame generation in `capture_thread` with real `GetNextImage()` logic.
+Replace folder/simulated frame generation in `capture_thread` with real `GetNextImage()` logic.
 
 ## Design Document
 
